@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "YouTube Stats Plugin Configuration",
+  "description": "Configuration schema for the YouTube Stats plugin - displays YouTube channel statistics including subscriber count, total views, and channel name",
+  "type": "object",
+  "properties": {
+    "enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Enable or disable the YouTube Stats plugin"
+    },
+    "channel_id": {
+      "type": "string",
+      "description": "YouTube channel ID (e.g., UCxxxxx...). Find your channel ID at https://www.youtube.com/account_advanced",
+      "minLength": 1
+    },
+    "update_interval": {
+      "type": "integer",
+      "default": 300,
+      "minimum": 60,
+      "maximum": 3600,
+      "description": "Update interval in seconds. How often to fetch fresh channel statistics from YouTube API (60-3600 seconds)"
+    },
+    "display_duration": {
+      "type": "number",
+      "default": 15,
+      "minimum": 5,
+      "maximum": 60,
+      "description": "How long to display the channel stats on screen in seconds (5-60 seconds)"
+    },
+    "live_priority": {
+      "type": "boolean",
+      "default": false,
+      "description": "Enable live priority takeover when plugin has live content"
+    }
+  },
+  "required": ["enabled", "channel_id"],
+  "additionalProperties": false
+}
