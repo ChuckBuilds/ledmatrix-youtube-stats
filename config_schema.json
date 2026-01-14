@@ -14,6 +14,12 @@
       "description": "YouTube channel ID (e.g., UCxxxxx...). Find your channel ID at https://www.youtube.com/account_advanced",
       "minLength": 1
     },
+    "api_key": {
+      "type": "string",
+      "description": "YouTube Data API v3 key (required - get one at https://console.cloud.google.com/apis/credentials). Store in config_secrets.json for security.",
+      "title": "API Key",
+      "x-secret": true
+    },
     "update_interval": {
       "type": "integer",
       "default": 300,
@@ -34,6 +40,6 @@
       "description": "Enable live priority takeover when plugin has live content"
     }
   },
-  "required": ["enabled", "channel_id"],
+  "required": ["enabled", "channel_id", "api_key"],
   "additionalProperties": false
 }
