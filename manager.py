@@ -55,6 +55,7 @@ class YouTubeStatsPlugin(BasePlugin):
         self.channel_stats: Optional[Dict[str, Any]] = None
         self.font = None
         self.youtube_logo = None
+        self.last_displayed_stats: Optional[Dict[str, Any]] = None  # Track last displayed to prevent unnecessary redraws
         
         # Initialize display components
         if self.enabled:
@@ -221,14 +222,14 @@ class YouTubeStatsPlugin(BasePlugin):
             draw.text((name_x, start_y), channel_name, font=self.font, fill=(255, 255, 255))
             
             # Draw subscriber count (middle)
-            subs_text = f"{channel_stats['subscribers']:,}subs"
+            subs_text = f"{channel_stats['subscribers']:,} subs"
             subs_bbox = draw.textbbox((0, 0), subs_text, font=self.font)
             subs_width = subs_bbox[2] - subs_bbox[0]
             subs_x = right_section_x + ((matrix_width - right_section_x - subs_width) // 2)
             draw.text((subs_x, start_y + line_height), subs_text, font=self.font, fill=(255, 255, 255))
             
             # Draw view count (bottom)
-            views_text = f"{channel_stats['views']:,}views"
+            views_text = f"{channel_stats['views']:,} views"
             views_bbox = draw.textbbox((0, 0), views_text, font=self.font)
             views_width = views_bbox[2] - views_bbox[0]
             views_x = right_section_x + ((matrix_width - right_section_x - views_width) // 2)
@@ -256,6 +257,18 @@ class YouTubeStatsPlugin(BasePlugin):
             self.update()
         
         if self.channel_stats:
+            # Check if we need to redraw (prevent flashing)
+            # Only redraw if the stats changed or force_clear is True
+            stats_changed = (
+                self.last_displayed_stats is None or
+                self.last_displayed_stats.get('subscribers') != self.channel_stats.get('subscribers') or
+                self.last_displayed_stats.get('views') != self.channel_stats.get('views') or
+                self.last_displayed_stats.get('title') != self.channel_stats.get('title')
+            )
+            
+            if not force_clear and not stats_changed:
+                return  # No change, skip redraw
+            
             if force_clear:
                 self.display_manager.clear()
             
@@ -263,6 +276,10 @@ class YouTubeStatsPlugin(BasePlugin):
             if display_image:
                 self.display_manager.image = display_image
                 self.display_manager.update_display()
+                
+                # Track what we displayed to prevent unnecessary redraws
+                self.last_displayed_stats = self.channel_stats.copy()
+                self.logger.debug(f"Displayed stats for channel: {self.channel_stats.get('title')}")
         else:
             self.logger.warning("No channel stats available to display")
     
