@@ -33,13 +33,12 @@
       "minimum": 5,
       "maximum": 60,
       "description": "How long to display the channel stats on screen in seconds (5-60 seconds)"
-    },
-    "live_priority": {
-      "type": "boolean",
-      "default": false,
-      "description": "Enable live priority takeover when plugin has live content"
     }
   },
-  "required": ["enabled", "channel_id", "api_key"],
+  "required": [
+    "enabled",
+    "channel_id",
+    "api_key"
+  ],
   "additionalProperties": false
 }
